@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,44 +36,44 @@ namespace photobooth
         private void load1_Click(object sender, EventArgs e)
         {
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pic1 = new Bitmap(streamCam.Image, 700, 525);
+            pic1 = new Bitmap(streamCam.Image, 525, 393);
             pictureBox1.Image = pic1;
         }
 
         private void load2_Click(object sender, EventArgs e)
         {
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-            pic2 = new Bitmap(streamCam.Image, 700, 525);
+            pic2 = new Bitmap(streamCam.Image, 525, 393);
             pictureBox2.Image = pic2;
         }
 
         private void load3_Click(object sender, EventArgs e)
         {
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
-            pic3 = new Bitmap(streamCam.Image, 700, 525);
+            pic3 = new Bitmap(streamCam.Image, 525, 393);
             pictureBox3.Image = pic3;
         }
 
         private void renderBtn_Click(object sender, EventArgs e)
         {
             // photo = new Bitmap(874, 2480);
-            photo = new Bitmap(1748, 2480);
+            photo = new Bitmap(1200, 1800);
 
             Graphics g = Graphics.FromImage(photo);
 
             // g.FillRectangle(Brushes.Green, 0, 0, photo.Width, photo.Height);
+            
+            g.DrawImage(pic1, new Point(54, 255));
+            g.DrawImage(pic2, new Point(54, 704));
+            g.DrawImage(pic3, new Point(54, 1157));
 
-            g.DrawImage(pic1, new Point(87, 150));
-            g.DrawImage(pic2, new Point(87, 750));
-            g.DrawImage(pic3, new Point(87, 1350));
+            g.DrawImage(pic1, new Point(623, 255));
+            g.DrawImage(pic2, new Point(623, 704));
+            g.DrawImage(pic3, new Point(623, 1157));
 
             g.DrawImage(frame, new Point(0, 0));
 
-            g.DrawImage(pic1, new Point(87 + 874, 150));
-            g.DrawImage(pic2, new Point(87 + 874, 750));
-            g.DrawImage(pic3, new Point(87 + 874, 1350));
 
-            g.DrawImage(frame, new Point(874, 0));
 
             pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox4.Image = photo;
@@ -91,7 +92,7 @@ namespace photobooth
 			}
 
             activeCamList.SelectedIndex = 0;
-            _capture = new Capture(activeCamList.SelectedIndex);
+            
 
             using (Graphics g = Graphics.FromImage(blank)) { g.Clear(Color.White); }
 
@@ -104,19 +105,24 @@ namespace photobooth
 
         private void streaming(object sender, System.EventArgs e)
         {
-            
-
             var img = _capture.QueryFrame().ToImage<Bgr, byte>();
             var bmp = img.Bitmap;
             // streamCam.Image = new Bitmap(bmp, streamCam.Width, streamCam.Width);
             streamCam.SizeMode = PictureBoxSizeMode.Zoom;
             streamCam.Image = bmp;
+            img.Dispose();
         }
 
         private void streamBtn_Click(object sender, EventArgs e)
         {
             if (!_streaming)
             {
+                try
+                {
+                    _capture = new Capture(activeCamList.SelectedIndex);
+                }
+                catch{}
+                
                 Application.Idle += streaming;
                 streamBtn.Text = @"Stop Streaming";
                 streamBtn.ForeColor = Color.White;
@@ -132,6 +138,7 @@ namespace photobooth
                 streamCam.Image = blank;
             }
 
+            
             _streaming = !_streaming;
         }
 
@@ -173,15 +180,9 @@ namespace photobooth
             }
         }
 
-        private void myPrintDocument1_PrintPage(System.Object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        private void label2_Click(object sender, EventArgs e)
         {
-            photo.Dispose();
-        }
 
-        private void printBtn_Click(object sender, EventArgs e)
-		{       
-
-            
         }
-	}
+    }
 }
