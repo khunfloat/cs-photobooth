@@ -82,7 +82,8 @@ namespace photobooth
         private void Form1_Load(object sender, EventArgs e)
         {
             _streaming = false;
-            
+
+
 
             FilterInfoCollection filterInfoCollection = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             foreach (FilterInfo filterInfo in filterInfoCollection)
@@ -91,8 +92,11 @@ namespace photobooth
         
 			}
 
-            activeCamList.SelectedIndex = 0;
-            
+            if (activeCamList.Items.Count > 0)
+            {
+                activeCamList.SelectedIndex = 0;
+
+            }
 
             using (Graphics g = Graphics.FromImage(blank)) { g.Clear(Color.White); }
 
